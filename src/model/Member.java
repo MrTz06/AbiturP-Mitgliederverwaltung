@@ -5,6 +5,9 @@ import java.time.LocalDate;
 // Model-Klasse für Mitglieder des Vereins
 public class Member {
 
+    // Platzhalter-ID für neue Mitglieder
+    public static final int PLACEHOLDER_ID = -10;
+
     //Attribute
     private final int mitgliedID;   //Primärschlüssel (nur lesbar)
 
@@ -12,7 +15,7 @@ public class Member {
     private String vorname;
     private String nachname;
     private LocalDate geburtsdatum;
-    private String straße;
+    private String strasse;
     private String plz;
     private String ort;
     private String email;
@@ -24,11 +27,11 @@ public class Member {
     //Konstruktor für neue Mitglieder (ID noch unbekannt)
 
     public Member(String vorname, String nachname, LocalDate geburtsdatum,
-                  String straße, String plz, String ort, String email,
+                  String strasse, String plz, String ort, String email,
                   MembershipType mitgliedsart, LocalDate eintrittsdatum) {
 
 
-        this.mitgliedID = -10; // ID wird später durch DB gesetzt (-10 ist Platzhalter)
+        this.mitgliedID = PLACEHOLDER_ID; // ID wird später durch DB gesetzt
 
 
         //Alle Attribute werden auf null/leer geprüft (Nutzung von isBlank statt isEmpty, da isEmpty keine Leerzeichen erkennt)
@@ -48,10 +51,10 @@ public class Member {
         }
         this.geburtsdatum = geburtsdatum;
 
-        if (straße == null || straße.isBlank()) {
-            throw new IllegalArgumentException("Die Straße-Eingabe darf nicht leer sein");
+        if (strasse == null || strasse.isBlank()) {
+            throw new IllegalArgumentException("Die Strasse-Eingabe darf nicht leer sein");
         }
-        this.straße = straße;
+        this.strasse = strasse;
 
         if (plz == null || plz.isBlank()) {
             throw new IllegalArgumentException("Die PLZ-Eingabe darf nicht leer sein");
@@ -82,7 +85,7 @@ public class Member {
 
     //Konstruktor für bestehende Mitglieder aus der DB (ID bekannt)
     public Member(int mitgliedID, String vorname, String nachname,
-                  LocalDate geburtsdatum, String straße, String plz,
+                  LocalDate geburtsdatum, String strasse, String plz,
                   String ort, String email, MembershipType mitgliedsart,
                   LocalDate eintrittsdatum) {
 
@@ -91,7 +94,7 @@ public class Member {
         this.vorname = vorname;
         this.nachname = nachname;
         this.geburtsdatum = geburtsdatum;
-        this.straße = straße;
+        this.strasse = strasse;
         this.plz = plz;
         this.ort = ort;
         this.email = email;
@@ -113,8 +116,8 @@ public class Member {
     public LocalDate getGeburtsdatum() {
         return geburtsdatum;
     }
-    public String getStraße() {
-        return straße;
+    public String getStrasse() {
+        return strasse;
     }
     public String getPlz() {
         return plz;
@@ -153,11 +156,11 @@ public class Member {
         }
         this.geburtsdatum = geburtsdatum;
     }
-    public void setStraße(String straße) {
-        if (straße == null || straße.isBlank()) {
-            throw new IllegalArgumentException("Die Straße-Eingabe darf nicht leer sein");
+    public void setStrasse(String strasse) {
+        if (strasse == null || strasse.isBlank()) {
+            throw new IllegalArgumentException("Die Strasse-Eingabe darf nicht leer sein");
         }
-        this.straße = straße.trim();
+        this.strasse = strasse.trim();
     }
     public void setPlz(String plz) {
         if (plz == null || plz.isBlank()) {
@@ -198,7 +201,7 @@ public class Member {
                 ", vorname='" + vorname + '\'' +
                 ", nachname='" + nachname + '\'' +
                 ", geburtsdatum=" + geburtsdatum +
-                ", straße='" + straße + '\'' +
+                ", strasse='" + strasse + '\'' +
                 ", plz='" + plz + '\'' +
                 ", ort='" + ort + '\'' +
                 ", email='" + email + '\'' +

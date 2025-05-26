@@ -75,14 +75,14 @@ public List<MembershipType> getAllMembershipTypes() {
     //Mitglieder
     //Fügt ein neues Mitglied in die DB ein, gibt die generierte ID zurück oder -1 bei Fehler
     public int addMember (Member m) {
-        String sql= "INSERT INTO Mitglieder (vorname, nachname, geburtsdatum, straße, plz, ort, email, mitgliedsart, eintrittsdatum) " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql= "INSERT INTO Mitglieder (vorname, nachname, geburtsdatum, strasse, plz, ort, email, mitgliedsart, eintrittsdatum) " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             //Probiert die DAten des Mitglieds in die DB zu schreiben
             statement.setString(1, m.getVorname());
             statement.setString(2, m.getNachname());
             statement.setDate(3, Date.valueOf(m.getGeburtsdatum()));
-            statement.setString(4, m.getStraße());
+            statement.setString(4, m.getStrasse());
             statement.setString(5, m.getPlz());
             statement.setString(6, m.getOrt());
             statement.setString(7, m.getEmail());
@@ -123,13 +123,13 @@ public List<MembershipType> getAllMembershipTypes() {
 
     public boolean updateMember (Member m) {
         String sql = "UPDATE Mitglieder SET " +
-                "vorname = ?, nachname = ?, geburtsdatum = ?, straße = ?, plz = ?, ort = ?, email = ?, mitgliedsart = ?, eintrittsdatum = ? " + "WHERE mitgliedID = ?";
+                "vorname = ?, nachname = ?, geburtsdatum = ?, strasse = ?, plz = ?, ort = ?, email = ?, mitgliedsart = ?, eintrittsdatum = ? " + "WHERE mitgliedID = ?";
 
        try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, m.getVorname());
             statement.setString(2, m.getNachname());
             statement.setDate(3, Date.valueOf(m.getGeburtsdatum()));
-            statement.setString(4, m.getStraße());
+            statement.setString(4, m.getStrasse());
             statement.setString(5, m.getPlz());
             statement.setString(6, m.getOrt());
             statement.setString(7, m.getEmail());
@@ -161,7 +161,7 @@ public List<MembershipType> getAllMembershipTypes() {
                 String vorname = resultSet.getString("vorname");
                 String nachname = resultSet.getString("nachname");
                 LocalDate geburtsdatum = resultSet.getDate("geburtsdatum").toLocalDate();
-                String straße = resultSet.getString("straße");
+                String strasse = resultSet.getString("strasse");
                 String plz = resultSet.getString("plz");
                 String ort = resultSet.getString("ort");
                 String email = resultSet.getString("email");
@@ -171,7 +171,7 @@ public List<MembershipType> getAllMembershipTypes() {
                 );
                 LocalDate eintrittsdatum = resultSet.getDate("eintrittsdatum").toLocalDate();
 
-                return new Member(mitgliedID, vorname, nachname, geburtsdatum, straße, plz, ort, email, mitgliedsart, eintrittsdatum);
+                return new Member(mitgliedID, vorname, nachname, geburtsdatum, strasse, plz, ort, email, mitgliedsart, eintrittsdatum);
             }
         } catch (SQLException e) {
             System.err.println("Fehler beim Laden des Mitglieds: " + e.getMessage());
@@ -196,7 +196,7 @@ public List<MembershipType> getAllMembershipTypes() {
                 String vorname = resultSet.getString("vorname");
                 String nachname = resultSet.getString("nachname");
                 LocalDate geburtsdatum = resultSet.getDate("geburtsdatum").toLocalDate();
-                String straße = resultSet.getString("straße");
+                String strasse = resultSet.getString("strasse");
                 String plz = resultSet.getString("plz");
                 String ort = resultSet.getString("ort");
                 String email = resultSet.getString("email");
@@ -206,7 +206,7 @@ public List<MembershipType> getAllMembershipTypes() {
                 );
                 LocalDate eintrittsdatum = resultSet.getDate("eintrittsdatum").toLocalDate();
 
-                members.add(new Member(mitgliedID, vorname, nachname, geburtsdatum, straße, plz, ort, email, mitgliedsart, eintrittsdatum));
+                members.add(new Member(mitgliedID, vorname, nachname, geburtsdatum, strasse, plz, ort, email, mitgliedsart, eintrittsdatum));
             }
         } catch (SQLException e) {
             System.err.println("Fehler bei der Suche nach Mitgliedern: " + e.getMessage());
@@ -228,7 +228,7 @@ public List<Member> getAllMembers() {
                 String vorname = resultSet.getString("vorname");
                 String nachname = resultSet.getString("nachname");
                 LocalDate geburtsdatum = resultSet.getDate("geburtsdatum").toLocalDate();
-                String straße = resultSet.getString("straße");
+                String strasse = resultSet.getString("strasse");
                 String plz = resultSet.getString("plz");
                 String ort = resultSet.getString("ort");
                 String email = resultSet.getString("email");
@@ -238,7 +238,7 @@ public List<Member> getAllMembers() {
                 );
                 LocalDate eintrittsdatum = resultSet.getDate("eintrittsdatum").toLocalDate();
 
-                members.add(new Member(mitgliedID, vorname, nachname, geburtsdatum, straße, plz, ort, email, mitgliedsart, eintrittsdatum));
+                members.add(new Member(mitgliedID, vorname, nachname, geburtsdatum, strasse, plz, ort, email, mitgliedsart, eintrittsdatum));
             }
         } catch (SQLException e) {
             System.err.println("Fehler beim Laden der Mitglieder: " + e.getMessage());
@@ -248,15 +248,3 @@ public List<Member> getAllMembers() {
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
