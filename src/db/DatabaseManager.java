@@ -8,11 +8,13 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+//Diese Klasse verwaltet die Datenbankverbindung und führt CRUD-Operationen für Mitglieder und Mitgliedsarten durch
+
 public class DatabaseManager {
 
     private static final String DB_URL = "jdbc:mysql://localhost:3306/Mitgliederverwaltung";
-    private static final String DB_USER = "benutzername";
-    private static final String DB_PASSWORD = "passwort";
+    private static final String DB_USER = "beispiel";
+    private static final String DB_PASSWORD = "1802";
 
     private Connection connection;
 
@@ -29,8 +31,6 @@ public class DatabaseManager {
         } catch (SQLException e) {
             System.err.println("Fehler beim Herstellen der Verbindung zur Datenbank: " + e.getMessage());
         }
-
-
     }
 
     //beendet die Verbindung zur DB
@@ -44,8 +44,6 @@ public class DatabaseManager {
                 System.err.println("Fehler beim Beenden der Verbindung zur Datenbank: " + e.getMessage());
             }
         }
-
-
     }
 
 
@@ -68,7 +66,6 @@ public List<MembershipType> getAllMembershipTypes() {
         } catch (SQLException e) {
             System.err.println("Fehler beim Laden der Mitgliedsarten: " + e.getMessage());
         }
-
         return types;
     }
 
@@ -78,8 +75,7 @@ public List<MembershipType> getAllMembershipTypes() {
     //Mitglieder
     //Fügt ein neues Mitglied in die DB ein, gibt die generierte ID zurück oder -1 bei Fehler
     public int addMember (Member m) {
-        String sql= "INSERT INTO Mitglieder (vorname, nachname, geburtsdatum, straße, plz, ort, email, mitgliedsart, eintrittsdatum) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql= "INSERT INTO Mitglieder (vorname, nachname, geburtsdatum, straße, plz, ort, email, mitgliedsart, eintrittsdatum) " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             //Probiert die DAten des Mitglieds in die DB zu schreiben
@@ -127,8 +123,7 @@ public List<MembershipType> getAllMembershipTypes() {
 
     public boolean updateMember (Member m) {
         String sql = "UPDATE Mitglieder SET " +
-                "vorname = ?, nachname = ?, geburtsdatum = ?, straße = ?, plz = ?, ort = ?, email = ?, mitgliedsart = ?, eintrittsdatum = ? " +
-                "WHERE mitgliedID = ?";
+                "vorname = ?, nachname = ?, geburtsdatum = ?, straße = ?, plz = ?, ort = ?, email = ?, mitgliedsart = ?, eintrittsdatum = ? " + "WHERE mitgliedID = ?";
 
        try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, m.getVorname());
@@ -154,10 +149,102 @@ public List<MembershipType> getAllMembershipTypes() {
 
     //Suche nach Mitgliedern anhand der ID, Ausgabe aller Daten + Join mit Mitgliedsarten
 
+    public Member getMemberbyID (int memberID) {
+
+        String sql = "SELECT m.*, mt.bezeichnung FROM Mitglieder m " + "JOIN Mitgliedsarten mt ON m.mitgliedsart = mt.membershipTypeID " + "WHERE m.mitgliedID = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, memberID);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                int mitgliedID = resultSet.getInt("mitgliedID");
+                String vorname = resultSet.getString("vorname");
+                String nachname = resultSet.getString("nachname");
+                LocalDate geburtsdatum = resultSet.getDate("geburtsdatum").toLocalDate();
+                String straße = resultSet.getString("straße");
+                String plz = resultSet.getString("plz");
+                String ort = resultSet.getString("ort");
+                String email = resultSet.getString("email");
+                MembershipType mitgliedsart = new MembershipType(
+                        resultSet.getInt("mitgliedsart"),
+                        resultSet.getString("bezeichnung")
+                );
+                LocalDate eintrittsdatum = resultSet.getDate("eintrittsdatum").toLocalDate();
+
+                return new Member(mitgliedID, vorname, nachname, geburtsdatum, straße, plz, ort, email, mitgliedsart, eintrittsdatum);
+            }
+        } catch (SQLException e) {
+            System.err.println("Fehler beim Laden des Mitglieds: " + e.getMessage());
+        }
+        return null;  // Gibt null zurück, wenn kein Mitglied gefunden wurde
+    }
 
 
+    //Suche nach Mitgliedern anhand des Namens (Vorname oder Nachname), Ausgabe aller Daten + Join mit Mitgliedsarten
+    public List<Member> searchMembersByName (String name) {
+        List<Member> members = new ArrayList<>();
+        String sql = "SELECT m.*, mt.bezeichnung FROM Mitglieder m " + "JOIN Mitgliedsarten mt ON m.mitgliedsart = mt.membershipTypeID " + "WHERE m.vorname LIKE ? OR m.nachname LIKE ?";
 
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            String searchPattern = "%" + name + "%";  // Platzhalter für die Suche
+            statement.setString(1, searchPattern);
+            statement.setString(2, searchPattern);
+            ResultSet resultSet = statement.executeQuery();
 
+            while (resultSet.next()) {
+                int mitgliedID = resultSet.getInt("mitgliedID");
+                String vorname = resultSet.getString("vorname");
+                String nachname = resultSet.getString("nachname");
+                LocalDate geburtsdatum = resultSet.getDate("geburtsdatum").toLocalDate();
+                String straße = resultSet.getString("straße");
+                String plz = resultSet.getString("plz");
+                String ort = resultSet.getString("ort");
+                String email = resultSet.getString("email");
+                MembershipType mitgliedsart = new MembershipType(
+                        resultSet.getInt("mitgliedsart"),
+                        resultSet.getString("bezeichnung")
+                );
+                LocalDate eintrittsdatum = resultSet.getDate("eintrittsdatum").toLocalDate();
+
+                members.add(new Member(mitgliedID, vorname, nachname, geburtsdatum, straße, plz, ort, email, mitgliedsart, eintrittsdatum));
+            }
+        } catch (SQLException e) {
+            System.err.println("Fehler bei der Suche nach Mitgliedern: " + e.getMessage());
+        }
+        return members;
+    }
+
+// Gibt alle Mitglieder mitsamt aller jeweiliger Daten + Join mit Mitgliedsarten
+
+public List<Member> getAllMembers() {
+        List<Member> members = new ArrayList<>();
+        String sql = "SELECT m.*, mt.bezeichnung FROM Mitglieder m " + "JOIN Mitgliedsarten mt ON m.mitgliedsart = mt.membershipTypeID";
+
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+
+            while (resultSet.next()) {
+                int mitgliedID = resultSet.getInt("mitgliedID");
+                String vorname = resultSet.getString("vorname");
+                String nachname = resultSet.getString("nachname");
+                LocalDate geburtsdatum = resultSet.getDate("geburtsdatum").toLocalDate();
+                String straße = resultSet.getString("straße");
+                String plz = resultSet.getString("plz");
+                String ort = resultSet.getString("ort");
+                String email = resultSet.getString("email");
+                MembershipType mitgliedsart = new MembershipType(
+                        resultSet.getInt("mitgliedsart"),
+                        resultSet.getString("bezeichnung")
+                );
+                LocalDate eintrittsdatum = resultSet.getDate("eintrittsdatum").toLocalDate();
+
+                members.add(new Member(mitgliedID, vorname, nachname, geburtsdatum, straße, plz, ort, email, mitgliedsart, eintrittsdatum));
+            }
+        } catch (SQLException e) {
+            System.err.println("Fehler beim Laden der Mitglieder: " + e.getMessage());
+        }
+        return members;
+    }
 
 
 }

@@ -2,7 +2,7 @@ package model;
 
 import java.time.LocalDate;
 
-
+// Model-Klasse für Mitglieder des Vereins
 public class Member {
 
     //Attribute
@@ -139,13 +139,13 @@ public class Member {
         if (vorname == null || vorname.isBlank()) {
             throw new IllegalArgumentException("Die Vorname-Eingabe darf nicht leer sein");
         }
-        this.vorname = vorname;
+        this.vorname = vorname.trim();
     }
     public void setNachname(String nachname) {
         if (nachname == null || nachname.isBlank()) {
             throw new IllegalArgumentException("Die Nachname-Eingabe darf nicht leer sein");
         }
-        this.nachname = nachname;
+        this.nachname = nachname.trim();
     }
     public void setGeburtsdatum(LocalDate geburtsdatum) {
         if (geburtsdatum == null) {
@@ -157,25 +157,25 @@ public class Member {
         if (straße == null || straße.isBlank()) {
             throw new IllegalArgumentException("Die Straße-Eingabe darf nicht leer sein");
         }
-        this.straße = straße;
+        this.straße = straße.trim();
     }
     public void setPlz(String plz) {
         if (plz == null || plz.isBlank()) {
             throw new IllegalArgumentException("Die PLZ-Eingabe darf nicht leer sein");
         }
-        this.plz = plz;
+        this.plz = plz.trim();
     }
     public void setOrt(String ort) {
         if (ort == null || ort.isBlank()) {
             throw new IllegalArgumentException("Die Ort-Eingabe darf nicht leer sein");
         }
-        this.ort = ort;
+        this.ort = ort.trim();
     }
     public void setEmail(String email) {
         if (email == null || email.isBlank()) {
             throw new IllegalArgumentException("Die Email-Eingabe darf nicht leer sein");
         }
-        this.email = email;
+        this.email = email.trim();
     }
     public void setMitgliedsart(MembershipType mitgliedsart) {
         if (mitgliedsart == null) {

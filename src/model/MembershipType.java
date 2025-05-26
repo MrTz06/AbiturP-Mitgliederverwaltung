@@ -1,5 +1,6 @@
 package model;
 
+// Model-Klasse für Mitgliedsarten
 public class MembershipType {
 
     private final int membershipTypeID;      // Primärschlüssel (nur lesbar) (wird von DB erstellt)
