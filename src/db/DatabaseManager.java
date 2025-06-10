@@ -75,10 +75,11 @@ public List<MembershipType> getAllMembershipTypes() {
     //Mitglieder
     //Fügt ein neues Mitglied in die DB ein, gibt die generierte ID zurück oder -1 bei Fehler
     public int addMember (Member m) {
-        String sql= "INSERT INTO Mitglieder (vorname, nachname, geburtsdatum, strasse, plz, ort, email, mitgliedsart, eintrittsdatum) " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql= "INSERT INTO Mitglieder (vorname, nachname, geburtsdatum, strasse, plz, ort, email, mitgliedsart, eintrittsdatum) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            //Probiert die DAten des Mitglieds in die DB zu schreiben
+            //Probiert die Daten des Mitglieds in die DB zu schreiben
             statement.setString(1, m.getVorname());
             statement.setString(2, m.getNachname());
             statement.setDate(3, Date.valueOf(m.getGeburtsdatum()));
@@ -89,9 +90,12 @@ public List<MembershipType> getAllMembershipTypes() {
             statement.setInt(8, m.getMitgliedsart().getMembershipTypeID());
             statement.setDate(9, Date.valueOf(m.getEintrittsdatum()));
 
-            int rowsAffected = statement.executeUpdate();   // Führt das SQL-INSERT-Statement aus und gibt die Anzahl der betroffenen Zeilen zurück
-            if (rowsAffected > 0) {                         //Prüft, ob mindestens eine Zeile betroffen ist
-                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {      //Falls ja, wird der Primärschlüssel (ID) des neuen Mitglieds abgerufen
+            // Führt das SQL-INSERT-Statement aus und gibt die Anzahl der betroffenen Zeilen zurück
+            int rowsAffected = statement.executeUpdate();
+            //Prüft, ob mindestens eine Zeile betroffen ist
+            if (rowsAffected > 0) {
+                //Falls ja, wird der Primärschlüssel (ID) des neuen Mitglieds abgerufen
+                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         return generatedKeys.getInt(1);
                     }
@@ -151,7 +155,9 @@ public List<MembershipType> getAllMembershipTypes() {
 
     public Member getMemberbyID (int memberID) {
 
-        String sql = "SELECT m.*, mt.bezeichnung FROM Mitglieder m " + "JOIN Mitgliedsarten mt ON m.mitgliedsart = mt.membershipTypeID " + "WHERE m.mitgliedID = ?";
+        String sql = "SELECT m.*, mt.bezeichnung FROM Mitglieder m "
+                + "JOIN Mitgliedsarten mt ON m.mitgliedsart = mt.membershipTypeID "
+                + "WHERE m.mitgliedID = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, memberID);
             ResultSet resultSet = statement.executeQuery();
