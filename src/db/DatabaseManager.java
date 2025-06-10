@@ -54,6 +54,10 @@ public List<MembershipType> getAllMembershipTypes() {
         List<MembershipType> types = new ArrayList<>();
         String query = "SELECT * FROM Mitgliedsarten";             //SQL-Befehl
 
+        if (connection == null) {
+            System.err.println("Keine Datenbankverbindung.");
+            return types;
+        }
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(query)) {
 
@@ -75,6 +79,10 @@ public List<MembershipType> getAllMembershipTypes() {
     //Mitglieder
     //Fügt ein neues Mitglied in die DB ein, gibt die generierte ID zurück oder -1 bei Fehler
     public int addMember (Member m) {
+        if (connection == null) {
+            System.err.println("Keine Datenbankverbindung.");
+            return -1;
+        }
         String sql= "INSERT INTO Mitglieder (vorname, nachname, geburtsdatum, strasse, plz, ort, email, mitgliedsart, eintrittsdatum) " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -105,6 +113,10 @@ public List<MembershipType> getAllMembershipTypes() {
 
     //Löscht ein Mitglied aus der DB (anhand der ID)
     public boolean deleteMember(int memberId) {
+        if (connection == null) {
+            System.err.println("Keine Datenbankverbindung.");
+            return false;
+        }
         String sql = "DELETE FROM Mitglieder WHERE mitgliedID = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, memberId);
@@ -122,6 +134,10 @@ public List<MembershipType> getAllMembershipTypes() {
     //Updaten eines Mitglieds anhand der ID
 
     public boolean updateMember (Member m) {
+        if (connection == null) {
+            System.err.println("Keine Datenbankverbindung.");
+            return false;
+        }
         String sql = "UPDATE Mitglieder SET " +
                 "vorname = ?, nachname = ?, geburtsdatum = ?, strasse = ?, plz = ?, ort = ?, email = ?, mitgliedsart = ?, eintrittsdatum = ? " + "WHERE mitgliedID = ?";
 
@@ -150,7 +166,10 @@ public List<MembershipType> getAllMembershipTypes() {
     //Suche nach Mitgliedern anhand der ID, Ausgabe aller Daten + Join mit Mitgliedsarten
 
     public Member getMemberbyID (int memberID) {
-
+        if (connection == null) {
+            System.err.println("Keine Datenbankverbindung.");
+            return null;
+        }
         String sql = "SELECT m.*, mt.bezeichnung FROM Mitglieder m " + "JOIN Mitgliedsarten mt ON m.mitgliedsart = mt.membershipTypeID " + "WHERE m.mitgliedID = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, memberID);
@@ -183,6 +202,10 @@ public List<MembershipType> getAllMembershipTypes() {
     //Suche nach Mitgliedern anhand des Namens (Vorname oder Nachname), Ausgabe aller Daten + Join mit Mitgliedsarten
     public List<Member> searchMembersByName (String name) {
         List<Member> members = new ArrayList<>();
+        if (connection == null) {
+            System.err.println("Keine Datenbankverbindung.");
+            return members;
+        }
         String sql = "SELECT m.*, mt.bezeichnung FROM Mitglieder m " + "JOIN Mitgliedsarten mt ON m.mitgliedsart = mt.membershipTypeID " + "WHERE m.vorname LIKE ? OR m.nachname LIKE ?";
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -218,6 +241,10 @@ public List<MembershipType> getAllMembershipTypes() {
 
 public List<Member> getAllMembers() {
         List<Member> members = new ArrayList<>();
+        if (connection == null) {
+            System.err.println("Keine Datenbankverbindung.");
+            return members;
+        }
         String sql = "SELECT m.*, mt.bezeichnung FROM Mitglieder m " + "JOIN Mitgliedsarten mt ON m.mitgliedsart = mt.membershipTypeID";
 
         try (Statement statement = connection.createStatement();
