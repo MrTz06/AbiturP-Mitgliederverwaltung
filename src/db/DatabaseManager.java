@@ -13,8 +13,8 @@ import java.util.List;
 public class DatabaseManager {
 
     private static final String DB_URL = "jdbc:mysql://localhost:3306/Mitgliederverwaltung";
-    private static final String DB_USER = "beispiel";
-    private static final String DB_PASSWORD = "1802";
+    private static final String DB_USER = "root";
+    private static final String DB_PASSWORD = "21022006";
 
     private Connection connection;
 
