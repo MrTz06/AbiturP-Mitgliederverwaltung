@@ -79,7 +79,7 @@ public List<MembershipType> getAllMembershipTypes() {
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            //Probiert die Daten des Mitglieds in die DB zu schreiben
+            //Setzt die Daten des Mitglieds in die vorbereiteten SQL-Statements ein
             statement.setString(1, m.getVorname());
             statement.setString(2, m.getNachname());
             statement.setDate(3, Date.valueOf(m.getGeburtsdatum()));
